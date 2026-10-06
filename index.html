@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Referee+ · Match timer for Amazfit</title>
+<meta name="description" content="Referee+ times periods, stoppage and breaks on your Amazfit watch, and buzzes when time is nearly up and when it is up. Football free; basketball, handball and ice hockey with Pro.">
+<meta property="og:title" content="Referee+ · A match clock you can read in one glance">
+<meta property="og:description" content="Match timer for referees on Amazfit watches with Zepp OS.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#000000">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 248 248'%3E%3Ccircle cx='124' cy='124' r='124' fill='%231C1C1C'/%3E%3Crect x='62' y='50' width='84' height='118' rx='10' fill='%23FFD60A' transform='rotate(-14 104 109)'/%3E%3Crect x='100' y='66' width='84' height='118' rx='10' fill='%23FF453A' transform='rotate(10 142 125)'/%3E%3Ccircle cx='172' cy='180' r='34' fill='%2330D158' stroke='%231C1C1C' stroke-width='6'/%3E%3Crect x='169' y='162' width='6' height='36'/%3E%3Crect x='154' y='177' width='36' height='6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #000000; --white: #FFFFFF; --green: #30D158; --green-d: #123D20;
+    --yellow: #FFD60A; --red: #FF453A; --grey: #A0A0A0; --text: #C8C8C8;
+    --line: #1C1C1C; --rule: #262626; --panel: #141414; --alt: #0A0A0A;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--black); color: var(--white); font-family: 'Archivo', -apple-system, 'Helvetica Neue', Arial, sans-serif; min-height: 100vh; }
+  a { color: var(--white); text-decoration: none; }
+  a:hover { color: var(--green); }
+  a:focus-visible, summary:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; border-radius: 6px; }
+  h1, h2, h3, p { margin: 0; }
+
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 96px 24px; }
+  section { border-top: 1px solid var(--line); scroll-margin-top: 64px; }
+  section.alt { background: var(--alt); }
+  .stack { display: flex; flex-direction: column; }
+  .intro { display: flex; flex-direction: column; gap: 14px; max-width: 720px; }
+  .eyebrow { font-size: 13px; letter-spacing: 0.12em; color: var(--grey); }
+  h2 { font-size: clamp(32px, 4vw, 46px); line-height: 1.08; font-weight: 600; letter-spacing: -0.01em; }
+  .lead { font-size: 17px; line-height: 1.55; color: var(--text); text-wrap: pretty; }
+
+  .btn { border-radius: 999px; font-weight: 600; display: inline-block; }
+  .btn-primary { background: var(--green); color: var(--black); }
+  .btn-primary:hover { color: var(--black); background: #4BE06F; }
+  .btn-ghost { border: 1px solid #3A3A3A; }
+
+  /* Nav */
+  nav { position: sticky; top: 0; z-index: 5; background: var(--black); border-bottom: 1px solid var(--line); }
+  nav .inner { max-width: 1200px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  .brand { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 600; }
+  .links { display: flex; gap: 24px; font-size: 15px; flex-wrap: wrap; }
+  .links a { color: var(--grey); }
+  .links a:hover { color: var(--green); }
+  nav .btn { padding: 10px 18px; font-size: 15px; }
+  @media (max-width: 760px) { .links { display: none; } }
+
+  /* Hero */
+  .hero { max-width: 1200px; margin: 0 auto; padding: 88px 24px 96px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 56px; align-items: center; }
+  .hero h1 { font-size: clamp(40px, 6vw, 68px); line-height: 1.02; font-weight: 600; letter-spacing: -0.02em; text-wrap: balance; }
+  .hero p { font-size: 19px; line-height: 1.55; color: var(--text); max-width: 520px; text-wrap: pretty; }
+  .ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+  .ctas .btn-primary { padding: 15px 26px; font-size: 17px; }
+  .ctas .btn-ghost { padding: 14px 24px; font-size: 17px; }
+  .bezel { padding: 22px; border-radius: 50%; background: var(--panel); border: 1px solid #2A2A2A; }
+  .center { display: flex; justify-content: center; }
+
+  /* Watch mockup */
+  .watch { flex: none; border-radius: 50%; overflow: hidden; background: #000; box-shadow: 0 0 0 1px #2A2A2A; }
+  .watch .screen { width: 480px; height: 480px; position: relative; transform-origin: 0 0; }
+  .watch .el { position: absolute; display: flex; align-items: center; justify-content: center; text-align: center; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif; font-weight: 400; line-height: 1.15; white-space: pre-line; font-variant-numeric: tabular-nums; overflow: hidden; }
+  .watch .el > div { width: 100%; flex: none; }
+
+  /* Steps */
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 520px), 1fr)); gap: 56px 48px; }
+  .step { display: flex; gap: 28px; align-items: center; flex-wrap: wrap; }
+  .step .copy { flex: 1 1 240px; display: flex; flex-direction: column; gap: 8px; }
+  .step .label { font-size: 14px; color: var(--grey); }
+  .step h3 { font-size: 22px; font-weight: 600; }
+  .step p { font-size: 16px; line-height: 1.55; color: var(--text); text-wrap: pretty; }
+
+  /* Glance */
+  .states { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 32px; }
+  .state { display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
+  .state .name { font-size: 18px; font-weight: 600; }
+  .state .desc { font-size: 15px; line-height: 1.5; color: var(--text); }
+  .haptics { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 16px; overflow: hidden; }
+  .haptics > div { background: var(--alt); padding: 22px; display: flex; flex-direction: column; gap: 10px; }
+  .pulses { display: flex; gap: 6px; }
+  .pulses i { width: 22px; height: 8px; border-radius: 4px; background: var(--white); }
+  .pulses i.tap { width: 8px; }
+  .haptics .t { font-size: 17px; font-weight: 600; }
+  .haptics .d { font-size: 15px; color: var(--grey); }
+
+  /* Sports */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+  .card { background: var(--panel); border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 14px; }
+  .card .head { display: flex; justify-content: space-between; align-items: center; }
+  .card .title { font-size: 22px; font-weight: 600; }
+  .card .formats { font-size: 15px; line-height: 1.8; color: var(--text); }
+  .card .note { font-size: 14px; color: var(--grey); }
+  .tag { font-size: 13px; border-radius: 999px; }
+  .tag.free { color: var(--green); background: var(--green-d); padding: 5px 12px; }
+  .tag.pro { color: var(--grey); border: 1px solid #3A3A3A; padding: 4px 11px; }
+
+  /* Pro */
+  .split { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 56px; align-items: center; }
+  .howto { border-top: 1px solid var(--rule); }
+  .howto > div { display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
+  .howto .n { font-size: 15px; color: var(--green); width: 24px; flex: none; }
+  .howto .s { font-size: 16px; line-height: 1.5; }
+
+  /* Coming next */
+  .next { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 32px; }
+  .next > div { display: flex; flex-direction: column; gap: 8px; border-top: 2px solid var(--white); padding-top: 18px; }
+  .next .t { font-size: 19px; font-weight: 600; }
+  .next .d { font-size: 15px; line-height: 1.55; color: var(--text); }
+
+  /* FAQ */
+  .faq { border-top: 1px solid var(--rule); }
+  .faq details { border-bottom: 1px solid var(--rule); }
+  .faq summary { list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 22px 0; cursor: pointer; font-size: 18px; font-weight: 500; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: '+'; font-size: 24px; color: var(--grey); width: 24px; text-align: center; flex: none; }
+  .faq details[open] summary::after { content: '\2212'; }
+  .faq .a { padding: 0 40px 22px 0; font-size: 16px; line-height: 1.6; color: var(--text); text-wrap: pretty; }
+
+  /* Get */
+  .get { display: flex; flex-direction: column; gap: 28px; align-items: center; text-align: center; }
+  .get h2 { font-size: clamp(32px, 4.5vw, 52px); line-height: 1.05; max-width: 760px; }
+  .get .btn-primary { padding: 16px 30px; font-size: 18px; }
+  .devices { font-size: 15px; line-height: 1.7; color: var(--text); max-width: 760px; }
+
+  footer { border-top: 1px solid var(--line); }
+  footer .inner { max-width: 1200px; margin: 0 auto; padding: 28px 24px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 14px; color: var(--grey); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="inner">
+    <a href="#top" class="brand">
+      <svg width="30" height="30" viewBox="0 0 248 248" aria-hidden="true"><circle cx="124" cy="124" r="124" fill="#1C1C1C"/><rect x="62" y="50" width="84" height="118" rx="10" fill="#FFD60A" transform="rotate(-14 104 109)"/><rect x="100" y="66" width="84" height="118" rx="10" fill="#FF453A" transform="rotate(10 142 125)"/><circle cx="172" cy="180" r="34" fill="#30D158" stroke="#1C1C1C" stroke-width="6"/><rect x="169" y="162" width="6" height="36" fill="#000"/><rect x="154" y="177" width="36" height="6" fill="#000"/></svg>
+      Referee+
+    </a>
+    <div class="links">
+      <a href="#how">How it works</a><a href="#glance">Reading the watch</a><a href="#sports">Sports</a><a href="#pro">Pro</a><a href="#faq">FAQ</a>
+    </div>
+    <a href="#get" class="btn btn-primary">Get Referee+</a>
+  </div>
+</nav>
+
+<main>
+<header id="top" class="hero">
+  <div class="stack" style="gap:24px">
+    <div class="eyebrow">MATCH TIMER FOR AMAZFIT · ZEPP OS</div>
+    <h1>A match clock you can read in one glance.</h1>
+    <p>Referee+ times periods, stoppage and breaks on your wrist, and buzzes when time is nearly up and when it is up. Your eyes stay on play.</p>
+    <div class="ctas">
+      <a href="#get" class="btn btn-primary">Get it in the Zepp App</a>
+      <a href="#how" class="btn btn-ghost">How it works</a>
+    </div>
+    <div style="font-size:14px;color:var(--grey)">Football free · Basketball, handball, ice hockey with Pro · $4.99 once</div>
+  </div>
+  <div class="center">
+    <div class="bezel"><div data-watch="hero" data-size="380" role="img" aria-label="Watch showing a running football match clock at 23:41"></div></div>
+  </div>
+</header>
+
+<section id="how">
+  <div class="wrap stack" style="gap:64px">
+    <div class="intro">
+      <div class="eyebrow" style="color:var(--green)">HOW IT WORKS</div>
+      <h2>From kick-off to full time, step by step.</h2>
+      <p class="lead">The screen layout never moves. End is always small at the top. The action you use most is always the big button at the bottom. The physical button takes you back.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div data-watch="home" role="img" aria-label="Sport list"></div>
+        <div class="copy"><div class="label">Step 1</div><h3>Pick your sport</h3>
+          <p>Open Referee+ and tap Football, Basketball, Handball or Ice hockey. Sports listed under PRO open the 14-day trial or the unlock screen.</p></div>
+      </div>
+      <div class="step">
+        <div data-watch="formats" role="img" aria-label="Football format list"></div>
+        <div class="copy"><div class="label">Step 2</div><h3>Pick the format</h3>
+          <p>Choose the age group or competition, for example Adult 2×45 or U13 2×30. The format you used last is highlighted in green, so a weekly fixture is one tap.</p></div>
+      </div>
+      <div class="step">
+        <div data-watch="ready" role="img" aria-label="Ready to kick off"></div>
+        <div class="copy"><div class="label">Step 3</div><h3>Tap Kick-off at the whistle</h3>
+          <p>The clock turns green and starts. Football counts up from 00:00. Basketball, handball and ice hockey count down from the period length, for example 10:00.</p></div>
+      </div>
+      <div class="step">
+        <div data-watch="stopped" role="img" aria-label="Football stoppage being tallied"></div>
+        <div class="copy"><div class="label">Step 4 · Football</div><h3>Stop tallies lost time</h3>
+          <p>When play stops for an injury or delay, tap Stop. In football the match clock never stops: it stays green and keeps running, and a yellow outlined box counts the time lost. Tap Play when play restarts. The total appears as "Added 2 min", ready to signal to the fourth official or announce.</p></div>
+      </div>
+      <div class="step">
+        <div data-watch="paused" role="img" aria-label="Countdown clock paused"></div>
+        <div class="copy"><div class="label">Step 4 · Basketball, handball, ice hockey</div><h3>Pause freezes the clock</h3>
+          <p>In countdown sports, Pause is a real stop. The digits freeze and turn yellow, and a solid yellow PAUSED bar appears. Tap Resume to restart the clock.</p></div>
+      </div>
+      <div class="step">
+        <div data-watch="over" role="img" aria-label="Period time is up"></div>
+        <div class="copy"><div class="label">Step 5</div><h3>Feel the end coming</h3>
+          <p>Two short buzzes mean one minute left. Four buzzes mean the period is over. The clock then holds at the period length in white, and a red box counts the time played beyond it. Your added time sits on the line above.</p></div>
+      </div>
+      <div class="step">
+        <div data-watch="confirm" role="img" aria-label="Confirm ending the half"></div>
+        <div class="copy"><div class="label">Step 6</div><h3>End the period with two taps</h3>
+          <p>At the final whistle of the period, tap End at the top. It turns into a red Sure? for three seconds; tap it again to confirm. If you don't, it goes back to End. A stray tap can never end a half.</p></div>
+      </div>
+      <div class="step">
+        <div data-watch="brk" role="img" aria-label="Half-time countdown"></div>
+        <div class="copy"><div class="label">Step 7</div><h3>Half-time runs itself</h3>
+          <p>The break counts down in white, with the next period shown below. Four buzzes when the break is over; a red box counts any overrun. Tap Start to begin the next period. In football the 2nd half starts at 45:00.</p></div>
+      </div>
+      <div class="step">
+        <div data-watch="full" role="img" aria-label="Full time summary"></div>
+        <div class="copy"><div class="label">Step 8</div><h3>Full time</h3>
+          <p>After the last period, the watch shows the final time and the added time for each half. Tap Done to return to the sport list.</p></div>
+      </div>
+      <div class="step">
+        <div data-watch="resume" role="img" aria-label="Resume match row on the sport list"></div>
+        <div class="copy"><div class="label">Good to know</div><h3>Left the app mid-match?</h3>
+          <p>The match keeps going. Open Referee+ again and the green Resume match row at the top shows the period and live clock. Tap it to return to the match screen.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="glance" class="alt">
+  <div class="wrap stack" style="gap:48px">
+    <div class="intro">
+      <div class="eyebrow" style="color:var(--yellow)">READING THE WATCH</div>
+      <h2>Four states, recognisable without reading.</h2>
+      <p class="lead">Each state changes the clock colour, the box under the clock and the bottom button together, so it reads in sunlight, rain or floodlights, and without relying on colour alone. Yellow and red mean what they mean on a card.</p>
+    </div>
+    <div class="states">
+      <div class="state">
+        <div data-watch="runningNo" role="img" aria-label="Running"></div>
+        <div class="name" style="color:var(--green)">Running</div>
+        <div class="desc">Green clock, no box. Bottom button: Stop or Pause.</div>
+      </div>
+      <div class="state">
+        <div data-watch="stopped" role="img" aria-label="Stoppage"></div>
+        <div class="name" style="color:var(--yellow)">Stoppage (football)</div>
+        <div class="desc">Clock stays green. Yellow outlined box counts added time.</div>
+      </div>
+      <div class="state">
+        <div data-watch="paused" role="img" aria-label="Paused"></div>
+        <div class="name" style="color:var(--yellow)">Paused</div>
+        <div class="desc">Clock frozen in yellow. Solid yellow PAUSED bar.</div>
+      </div>
+      <div class="state">
+        <div data-watch="over" role="img" aria-label="Time is up"></div>
+        <div class="name" style="color:var(--red)">Time is up</div>
+        <div class="desc">Clock holds in white. Solid red box counts time beyond.</div>
+      </div>
+    </div>
+    <div class="haptics">
+      <div><div class="pulses"><i></i><i></i></div>
+        <div class="t">Two short buzzes</div><div class="d">One minute left in the period or break.</div></div>
+      <div><div class="pulses"><i></i><i></i><i></i><i></i></div>
+        <div class="t">Four buzzes</div><div class="d">The period or break is over.</div></div>
+      <div><div class="pulses"><i class="tap"></i></div>
+        <div class="t">One tap</div><div class="d">Your button press registered. No sound needed.</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="sports">
+  <div class="wrap stack" style="gap:40px">
+    <div class="intro">
+      <div class="eyebrow" style="color:var(--green)">SPORTS &amp; FORMATS</div>
+      <h2>Every format, ready to go.</h2>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <div class="head"><div class="title">Football</div><div class="tag free">Free</div></div>
+        <div class="formats">Adult 2×45<br>U17 2×40 · U15 2×35<br>U13 2×30 · U11 2×25<br>U9 2×20 · Extra time 2×15</div>
+        <div class="note">Counts up. Stoppage tally.</div>
+      </div>
+      <div class="card">
+        <div class="head"><div class="title">Basketball</div><div class="tag pro">Pro</div></div>
+        <div class="formats">FIBA 4×10 · NBA 4×12<br>NCAA 2×20<br>Overtime 5</div>
+        <div class="note">Counts down. Real pause.</div>
+      </div>
+      <div class="card">
+        <div class="head"><div class="title">Handball</div><div class="tag pro">Pro</div></div>
+        <div class="formats">Adult 2×30<br>Youth 2×25<br>U12 2×20</div>
+        <div class="note">Counts down. Real pause.</div>
+      </div>
+      <div class="card">
+        <div class="head"><div class="title">Ice hockey</div><div class="tag pro">Pro</div></div>
+        <div class="formats">Adult 3×20<br>Youth 3×15<br>Overtime 5</div>
+        <div class="note">Counts down. Real pause.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pro" class="alt">
+  <div class="wrap split">
+    <div class="stack" style="gap:22px">
+      <div class="eyebrow" style="color:var(--green)">REFEREE+ PRO</div>
+      <h2>$4.99 once. No subscription.</h2>
+      <p class="lead">Pro unlocks basketball, handball and ice hockey, plus every new feature as it ships. Try it free for 14 days. One purchase covers up to 3 watches.</p>
+      <div class="howto">
+        <div><div class="n">1</div><div class="s">On your phone, open the Zepp app and go to Referee+.</div></div>
+        <div><div class="n">2</div><div class="s">Tap Unlock Pro · $4.99 once and complete the purchase.</div></div>
+        <div><div class="n">3</div><div class="s">On the watch, tap a Pro sport, then I've bought it.</div></div>
+      </div>
+    </div>
+    <div class="center">
+      <div class="bezel"><div data-watch="paywall" data-size="320" role="img" aria-label="Referee+ Pro unlock screen on the watch"></div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap stack" style="gap:40px">
+    <div class="intro">
+      <div class="eyebrow">COMING NEXT</div>
+      <h2>From timer to match report.</h2>
+    </div>
+    <div class="next">
+      <div><div class="t">Goals, cards, subs</div><div class="d">Tap the clock, pick Home or Away, the event, then the shirt number.</div></div>
+      <div style="border-top-color:var(--yellow)"><div class="t">Score and suspensions</div><div class="d">Live score on the match screen, and up to three penalty timers for handball and ice hockey.</div></div>
+      <div style="border-top-color:var(--green)"><div class="t">Match summary</div><div class="d">Score, events by minute and added time per half, ready to copy into the official report.</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="faq" class="alt">
+  <div class="wrap stack" style="max-width:880px;gap:32px">
+    <h2>Questions</h2>
+    <div class="faq">
+      <details open><summary>Does the clock stop when I tap Stop in football?</summary>
+        <div class="a">No. Football is played on a running clock, so the match time keeps counting. Stop only measures the time lost while play is stopped, and adds it to the "Added" total you announce at the end of the half.</div></details>
+      <details><summary>What is the difference between Stop and Pause?</summary>
+        <div class="a">Stop (football) tallies lost time while the clock runs on: green clock, yellow outlined box. Pause (basketball, handball, ice hockey) freezes the clock: yellow clock, solid yellow PAUSED bar.</div></details>
+      <details><summary>What happens if I tap End by accident?</summary>
+        <div class="a">Nothing yet. End first turns into a red Sure? for three seconds. Only a second tap on Sure? ends the period; otherwise it returns to End.</div></details>
+      <details><summary>Do I need to hear the watch?</summary>
+        <div class="a">No. Everything is signalled by vibration: two short buzzes for one minute left, four for the end of a period or break, one tap to confirm a button press.</div></details>
+      <details><summary>Can I read it in bright sun?</summary>
+        <div class="a">The match screen is a single large clock in green, yellow, red or white on a pure black background, chosen for maximum contrast on AMOLED displays.</div></details>
+      <details><summary>How does the Pro trial work?</summary>
+        <div class="a">Pro sports are free to try for 14 days. After that, unlock Pro once for $4.99 in the Zepp app; it covers up to 3 watches.</div></details>
+      <details><summary>Which watches are supported?</summary>
+        <div class="a">Amazfit watches running Zepp OS, from the Band 7, GTR 3 and GTS 3 up to the Balance 2, T-Rex 3 and Active 2. The layout is designed separately for round, square and band screens.</div></details>
+    </div>
+  </div>
+</section>
+
+<section id="get">
+  <div class="wrap get">
+    <h2>Your next match, timed properly.</h2>
+    <p class="lead" style="max-width:560px">In the Zepp app on your phone, open the App Store, search for Referee+ and install it on your watch.</p>
+    <a href="#get" class="btn btn-primary">Get it in the Zepp App</a>
+    <div class="stack" style="gap:10px;align-items:center;margin-top:20px">
+      <div class="eyebrow">WORKS ON AMAZFIT WATCHES WITH ZEPP OS</div>
+      <div class="devices">Balance · Balance 2 · T-Rex 3 · Active · Active 2 · Active Max · Active Edge · Cheetah · Falcon · GTR 3 · GTR 3 Pro · GTR 4 · GTS 3 · GTS 4 · GTS 4 mini · Bip 5 · Bip 6 · Band 7</div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="inner">
+    <div>Referee+ · Match timer for referees</div>
+    <div>Amazfit and Zepp are trademarks of their respective owners.</div>
+  </div>
+</footer>
+
+<script>
+// Watch mockups: each screen is laid out on a 480×480 canvas (centre-origin
+// coordinates, like the watch app) and scaled down to the requested size.
+(function () {
+  const T = { BLACK: '#000000', WHITE: '#FFFFFF', GREEN: '#30D158', GREEN_D: '#123D20', YELLOW: '#FFD60A', RED: '#FF453A', GREY: '#A0A0A0', DARK: '#262626' };
+  const m = { top: -172, endW: 150, endH: 60, period: -110, periodW: 340, periodH: 44, periodSize: 32, clock: -22, clockW: 420, clockH: 132, clockSize: 132, slot: 76, pillW: 280, pillH: 60, pillText: 30, overH: 68, overSize: 48, primary: 158, primW: 240, primH: 84, btn: 34, wide: 340, note: 28, titleY: -168, titleH: 44, title: 36, listTop: -128, rowW: 340, rowH: 84, rowText: 32, gap: 12, hdrH: 36, small: 24, resH: 108 };
+
+  function mk() {
+    const e = [];
+    return {
+      els: e,
+      t(x, y, w, h, text, size, color) { e.push({ x, y, w, h, text, size, color }); },
+      b(x, y, w, h, text, size, color, bg, r) { e.push({ x, y, w, h, text, size, color, bg, r }); },
+      f(x, y, w, h, bg, r) { e.push({ x, y, w, h, bg, r }); },
+      s(x, y, w, h, line, r, lw) { e.push({ x, y, w, h, line, r, lw }); },
+    };
+  }
+
+  function match(s) {
+    const L = mk();
+    if (s.top === 'end') L.b(0, m.top, m.endW, m.endH, 'End', m.btn, 'WHITE', 'DARK', 30);
+    if (s.top === 'sure') L.b(0, m.top, m.endW + 20, m.endH, 'Sure?', m.btn, 'BLACK', 'RED', 30);
+    if (s.top === 'sport') L.t(0, m.top, m.wide, m.endH, s.sport, m.note, 'GREY');
+    L.t(0, m.period, m.periodW, m.periodH, s.period, m.periodSize, s.periodColor || 'WHITE');
+    L.t(0, m.clock, m.clockW, m.clockH, s.clock, m.clockSize, s.clockColor);
+    const k = s.slot && s.slot.k;
+    if (k === 'note') L.t(0, m.slot, m.wide, m.pillH, s.slot.t, m.note, 'GREY');
+    if (k === 'stop') { L.s(0, m.slot, m.pillW, m.pillH, 'YELLOW', 30, 3); L.t(0, m.slot, m.pillW - 16, m.pillH, s.slot.t, m.pillText, 'YELLOW'); }
+    if (k === 'paused') { L.f(0, m.slot, m.pillW, m.pillH, 'YELLOW', 30); L.f(-80, m.slot, 9, 26, 'BLACK', 0); L.f(-64, m.slot, 9, 26, 'BLACK', 0); L.t(18, m.slot, 200, m.pillH, 'PAUSED', m.pillText, 'BLACK'); }
+    if (k === 'over') { L.f(0, m.slot, m.pillW, m.overH, 'RED', 34); L.t(0, m.slot, m.pillW - 16, m.overH, s.slot.t, m.overSize, 'BLACK'); }
+    L.b(0, m.primary, m.primW, m.primH, s.primary[0], m.btn, s.primary[2] || 'BLACK', s.primary[1], 42);
+    return L.els;
+  }
+
+  function list(title, items) {
+    const L = mk();
+    L.t(0, m.titleY, m.wide, m.titleH, title, m.title, 'WHITE');
+    let cur = m.listTop;
+    items.forEach((it) => {
+      if (it.k === 'row') { L.b(0, cur + m.rowH / 2, m.rowW, m.rowH, it.t, m.rowText, it.fg || 'WHITE', it.bg || 'DARK', 42); cur += m.rowH + m.gap; }
+      if (it.k === 'hdr') { L.t(0, cur + m.hdrH / 2, m.wide, m.hdrH, it.t, m.small, 'GREY'); cur += m.hdrH + m.gap; }
+      if (it.k === 'res') {
+        const h = m.resH, y = cur + h / 2;
+        L.f(0, y, m.rowW, h, 'GREEN', 54);
+        L.t(0, Math.round(y - h * 0.19), m.rowW - 24, 43, 'Resume match', m.rowText, 'BLACK');
+        L.t(0, Math.round(y + h * 0.22), m.rowW - 24, 35, it.t, m.small, 'BLACK');
+        cur += h + m.gap;
+      }
+    });
+    return L.els;
+  }
+
+  function paywall() {
+    const L = mk();
+    L.t(0, -150, 320, 44, 'Referee+ Pro', 36, 'WHITE');
+    L.t(0, -84, 340, 76, 'Cards, match report\nand every sport.', 28, 'WHITE');
+    L.t(0, -6, 340, 56, '$4.99 once', 48, 'GREEN');
+    L.t(0, 72, 320, 64, 'Zepp app > Referee+\n> Unlock Pro', 24, 'GREY');
+    L.b(0, 158, 260, 76, "I've bought it", 30, 'WHITE', 'DARK', 38);
+    return L.els;
+  }
+
+  const GO = (t) => [t, 'GREEN'], YE = (t) => [t, 'YELLOW'];
+  const S = {
+    ready: { top: 'sport', sport: 'Football', period: '1st half', clock: '00:00', clockColor: 'WHITE', slot: { k: 'note', t: 'Adult · 2×45' }, primary: GO('Kick-off') },
+    running: { top: 'end', period: '1st half', clock: '23:41', clockColor: 'GREEN', slot: { k: 'note', t: 'Added 2 min' }, primary: YE('Stop') },
+    runningNo: { top: 'end', period: '2nd half', clock: '63:12', clockColor: 'GREEN', slot: { k: 'none' }, primary: YE('Stop') },
+    stopped: { top: 'end', period: '1st half', clock: '24:05', clockColor: 'GREEN', slot: { k: 'stop', t: 'Stoppage +2:24' }, primary: GO('Play') },
+    paused: { top: 'end', period: 'Q3', clock: '07:32', clockColor: 'YELLOW', slot: { k: 'paused' }, primary: GO('Resume') },
+    over: { top: 'end', period: '1st half · +3 min', clock: '45:00', clockColor: 'WHITE', slot: { k: 'over', t: '+01:42' }, primary: YE('Stop') },
+    confirm: { top: 'sure', period: 'End 1st half?', periodColor: 'RED', clock: '45:00', clockColor: 'WHITE', slot: { k: 'over', t: '+03:10' }, primary: YE('Stop') },
+    brk: { top: 'none', period: 'Half-time', clock: '12:40', clockColor: 'WHITE', slot: { k: 'note', t: 'Next: 2nd half' }, primary: GO('Start') },
+    full: { top: 'none', period: 'Full time', clock: '90:00', clockColor: 'WHITE', slot: { k: 'note', t: 'Added 2 + 4 min' }, primary: ['Done', 'WHITE'] },
+  };
+  const HOME = [{ k: 'row', t: 'Football' }, { k: 'hdr', t: 'PRO · 14-DAY TRIAL' }, { k: 'row', t: 'Basketball' }, { k: 'row', t: 'Handball' }, { k: 'row', t: 'Ice hockey' }];
+  const FMT = [{ k: 'row', t: 'Adult 2×45', fg: 'GREEN', bg: 'GREEN_D' }, { k: 'row', t: 'U17 2×40' }, { k: 'row', t: 'U15 2×35' }, { k: 'row', t: 'U13 2×30' }, { k: 'row', t: 'U11 2×25' }];
+  const RES = [{ k: 'res', t: '2nd half · 63:12' }, { k: 'row', t: 'Football' }, { k: 'hdr', t: 'PRO · 14-DAY TRIAL' }, { k: 'row', t: 'Basketball' }];
+
+  const SCREENS = {
+    hero: () => match(S.running),
+    home: () => list('Referee+', HOME),
+    formats: () => list('Football', FMT),
+    resume: () => list('Referee+', RES),
+    paywall,
+  };
+  Object.keys(S).forEach((k) => { SCREENS[k] = () => match(S[k]); });
+
+  function render(host) {
+    const els = SCREENS[host.dataset.watch]();
+    // Large mockups sit in a 22px bezel; shrink them to fit narrow phones.
+    const want = Number(host.dataset.size) || 200;
+    const size = host.dataset.size ? Math.min(want, document.documentElement.clientWidth - 48 - 46) : want;
+    host.className = 'watch';
+    host.style.width = host.style.height = size + 'px';
+    const screen = document.createElement('div');
+    screen.className = 'screen';
+    screen.style.transform = 'scale(' + size / 480 + ')';
+    screen.setAttribute('aria-hidden', 'true');
+    els.forEach((e) => {
+      const el = document.createElement('div');
+      el.className = 'el';
+      Object.assign(el.style, {
+        left: 240 + e.x - e.w / 2 + 'px', top: 240 + e.y - e.h / 2 + 'px',
+        width: e.w + 'px', height: e.h + 'px', fontSize: (e.size || 0) + 'px', color: T[e.color] || '',
+      });
+      if (e.bg) { el.style.background = T[e.bg]; el.style.borderRadius = e.r + 'px'; }
+      if (e.line) { el.style.border = e.lw + 'px solid ' + T[e.line]; el.style.borderRadius = e.r + 'px'; }
+      if (e.text) { const t = document.createElement('div'); t.textContent = e.text; el.appendChild(t); }
+      screen.appendChild(el);
+    });
+    host.appendChild(screen);
+  }
+
+  document.querySelectorAll('[data-watch]').forEach(render);
+
+  // Accordion: keep one FAQ open at a time, as in the design.
+  const items = document.querySelectorAll('.faq details');
+  items.forEach((d) => d.addEventListener('toggle', () => {
+    if (d.open) items.forEach((o) => { if (o !== d) o.open = false; });
+  }));
+})();
+</script>
+</body>
+</html>
