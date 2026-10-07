@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Referee+ · Match timer for Amazfit</title>
-<meta name="description" content="Referee+ times periods, stoppage and breaks on your Amazfit watch, and buzzes when time is nearly up and when it is up. Football free; basketball, handball and ice hockey with Pro.">
+<meta name="description" content="Referee+ times periods, stoppage and breaks on your Amazfit watch, and buzzes when time is nearly up and when it is up. Every sport free; log goals, cards and subs and get the match report with Pro.">
 <meta property="og:title" content="Referee+ · A match clock you can read in one glance">
 <meta property="og:description" content="Match timer for referees on Amazfit watches with Zepp OS.">
 <meta property="og:type" content="website">
@@ -66,6 +66,23 @@
   .watch .screen { width: 480px; height: 480px; position: relative; transform-origin: 0 0; }
   .watch .el { position: absolute; display: flex; align-items: center; justify-content: center; text-align: center; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif; font-weight: 400; line-height: 1.15; white-space: pre-line; font-variant-numeric: tabular-nums; overflow: hidden; }
   .watch .el > div { width: 100%; flex: none; }
+  .watch .el.left { justify-content: flex-start; text-align: left; }
+
+  /* Phone report mockup (the Zepp app settings page) */
+  .phone { width: 300px; max-width: 100%; border-radius: 36px; background: #000; border: 1px solid #2A2A2A; padding: 26px 16px 22px; display: flex; flex-direction: column; gap: 10px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif; }
+  .phone .ph-title { font-size: 22px; }
+  .phone .ph-sec { font-size: 11px; letter-spacing: 0.06em; color: var(--grey); margin-top: 6px; }
+  .phone .ph-card { background: var(--line); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 6px; }
+  .phone .ph-meta { font-size: 12px; color: var(--grey); }
+  .phone .ph-score { font-size: 22px; margin-bottom: 4px; }
+  .phone .ph-ev { display: flex; align-items: center; gap: 8px; font-size: 12.5px; }
+  .phone .ph-ev .m { width: 28px; color: var(--grey); }
+  .phone .ph-ev .i { width: 16px; display: flex; justify-content: center; }
+  .phone .dot { width: 8px; height: 8px; border-radius: 4px; background: var(--white); }
+  .phone .crd { width: 7px; height: 10px; border-radius: 2px; }
+  .phone .sub { font-size: 9px; color: var(--green); }
+  .phone .ph-added { font-size: 12px; color: var(--grey); margin-top: 4px; }
+  .phone .ph-copy { margin-top: 8px; background: var(--rule); border-radius: 10px; padding: 10px; text-align: center; font-size: 13px; }
 
   /* Steps */
   .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 520px), 1fr)); gap: 56px 48px; }
@@ -106,12 +123,6 @@
   .howto .n { font-size: 15px; color: var(--green); width: 24px; flex: none; }
   .howto .s { font-size: 16px; line-height: 1.5; }
 
-  /* Coming next */
-  .next { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 32px; }
-  .next > div { display: flex; flex-direction: column; gap: 8px; border-top: 2px solid var(--white); padding-top: 18px; }
-  .next .t { font-size: 19px; font-weight: 600; }
-  .next .d { font-size: 15px; line-height: 1.55; color: var(--text); }
-
   /* FAQ */
   .faq { border-top: 1px solid var(--rule); }
   .faq details { border-bottom: 1px solid var(--rule); }
@@ -140,7 +151,7 @@
       Referee+
     </a>
     <div class="links">
-      <a href="#how">How it works</a><a href="#glance">Reading the watch</a><a href="#sports">Sports</a><a href="#pro">Pro</a><a href="#faq">FAQ</a>
+      <a href="#how">How it works</a><a href="#glance">Reading the watch</a><a href="#sports">Sports</a><a href="#log">Event log</a><a href="#pro">Pro</a><a href="#faq">FAQ</a>
     </div>
     <a href="#get" class="btn btn-primary">Get Referee+</a>
   </div>
@@ -156,7 +167,7 @@
       <a href="#get" class="btn btn-primary">Get it in the Zepp App</a>
       <a href="#how" class="btn btn-ghost">How it works</a>
     </div>
-    <div style="font-size:14px;color:var(--grey)">Football free · Basketball, handball, ice hockey with Pro · $4.99 once</div>
+    <div style="font-size:14px;color:var(--grey)">Every sport free · Goals, cards and the match report with Pro · $4.99 once</div>
   </div>
   <div class="center">
     <div class="bezel"><div data-watch="hero" data-size="380" role="img" aria-label="Watch showing a running football match clock at 23:41"></div></div>
@@ -175,7 +186,7 @@
       <div class="step">
         <div data-watch="home" role="img" aria-label="Sport list"></div>
         <div class="copy"><div class="label">Step 1</div><h3>Pick your sport</h3>
-          <p>Open Referee+ and tap Football, Basketball, Handball or Ice hockey. Sports listed under PRO open the 14-day trial or the unlock screen.</p></div>
+          <p>Open Referee+ and tap Football, Basketball, Handball or Ice hockey. Every sport's clock is free.</p></div>
       </div>
       <div class="step">
         <div data-watch="formats" role="img" aria-label="Football format list"></div>
@@ -215,7 +226,7 @@
       <div class="step">
         <div data-watch="full" role="img" aria-label="Full time summary"></div>
         <div class="copy"><div class="label">Step 8</div><h3>Full time</h3>
-          <p>After the last period, the watch shows the final time and the added time for each half. Tap Done to return to the sport list.</p></div>
+          <p>After the last period, the watch shows the final time and the added time for each half. Tap Done to return to the sport list. With Pro, the match report is already on its way to your phone.</p></div>
       </div>
       <div class="step">
         <div data-watch="resume" role="img" aria-label="Resume match row on the sport list"></div>
@@ -270,28 +281,99 @@
   <div class="wrap stack" style="gap:40px">
     <div class="intro">
       <div class="eyebrow" style="color:var(--green)">SPORTS &amp; FORMATS</div>
-      <h2>Every format, ready to go.</h2>
+      <h2>Every sport, every format, free.</h2>
     </div>
     <div class="cards">
       <div class="card">
         <div class="head"><div class="title">Football</div><div class="tag free">Free</div></div>
         <div class="formats">Adult 2×45<br>U17 2×40 · U15 2×35<br>U13 2×30 · U11 2×25<br>U9 2×20 · Extra time 2×15</div>
         <div class="note">Counts up. Stoppage tally.</div>
+        <div class="note">Pro logs: goal, sub, yellow, red.</div>
       </div>
       <div class="card">
-        <div class="head"><div class="title">Basketball</div><div class="tag pro">Pro</div></div>
+        <div class="head"><div class="title">Basketball</div><div class="tag free">Free</div></div>
         <div class="formats">FIBA 4×10 · NBA 4×12<br>NCAA 2×20<br>Overtime 5</div>
         <div class="note">Counts down. Real pause.</div>
+        <div class="note">Pro logs: foul, timeout, technical, disqualifying. Team fouls per quarter.</div>
       </div>
       <div class="card">
-        <div class="head"><div class="title">Handball</div><div class="tag pro">Pro</div></div>
+        <div class="head"><div class="title">Handball</div><div class="tag free">Free</div></div>
         <div class="formats">Adult 2×30<br>Youth 2×25<br>U12 2×20</div>
         <div class="note">Counts down. Real pause.</div>
+        <div class="note">Pro logs: goal, 2 min, yellow, red. Suspension timers.</div>
       </div>
       <div class="card">
-        <div class="head"><div class="title">Ice hockey</div><div class="tag pro">Pro</div></div>
+        <div class="head"><div class="title">Ice hockey</div><div class="tag free">Free</div></div>
         <div class="formats">Adult 3×20<br>Youth 3×15<br>Overtime 5</div>
         <div class="note">Counts down. Real pause.</div>
+        <div class="note">Pro logs: goal, minor 2, major 5, misconduct. Penalty timers.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="log">
+  <div class="wrap stack" style="gap:64px">
+    <div class="intro">
+      <div class="eyebrow" style="color:var(--green)">PRO · THE EVENT LOG</div>
+      <h2>The notebook, on your wrist.</h2>
+      <p class="lead">Log the match as it happens, in four taps, without taking your eyes off play for long. The event's time is taken the moment you tap the clock.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div data-watch="proMatch" role="img" aria-label="Match screen with the score next to End"></div>
+        <div class="copy"><div class="label">Tap the clock</div><h3>Something happened</h3>
+          <p>Tap the big clock during play or a break. The clock keeps running underneath, and the buzzes still come. With Pro the score sits next to End.</p></div>
+      </div>
+      <div class="step">
+        <div data-watch="team" role="img" aria-label="Pick Home or Away"></div>
+        <div class="copy"><div class="label">Then</div><h3>Home or Away</h3>
+          <p>Two big buttons. The minute is already stamped at the top: 64', or 45+2' in added time, or HT at half-time.</p></div>
+      </div>
+      <div class="step">
+        <div data-watch="etype" role="img" aria-label="Pick the event"></div>
+        <div class="copy"><div class="label">Then</div><h3>The event</h3>
+          <p>Four tiles, in the sport's own words. Football: Goal, Sub, Yellow, Red. Handball: Goal, 2 min, Yellow, Red. Ice hockey: Goal, Minor 2, Major 5, Misconduct. Basketball: Foul, Timeout, Tech, Disq.</p></div>
+      </div>
+      <div class="step">
+        <div data-watch="pad" role="img" aria-label="Enter the shirt number"></div>
+        <div class="copy"><div class="label">Then</div><h3>The shirt number</h3>
+          <p>A number pad with big keys. A substitution asks for the player going off, then the one coming on. No number? Tap OK anyway.</p></div>
+      </div>
+      <div class="step">
+        <div data-watch="chips" role="img" aria-label="Penalty timers under the clock"></div>
+        <div class="copy"><div class="label">Handball · Ice hockey</div><h3>Penalty timers run themselves</h3>
+          <p>Suspensions and penalties count down under the clock, team and shirt number on each: H7&nbsp;1:24. They freeze when the clock is paused and carry into the next period.</p></div>
+      </div>
+      <div class="step">
+        <div data-watch="events" role="img" aria-label="Event list with Undo"></div>
+        <div class="copy"><div class="label">Made a mistake?</div><h3>Undo last</h3>
+          <p>Tap the score to see every event, latest first. Undo last removes the most recent one.</p></div>
+      </div>
+    </div>
+    <div class="split">
+      <div class="stack" style="gap:18px">
+        <div class="eyebrow" style="color:var(--green)">THE MATCH REPORT</div>
+        <h2>Full time. The report is on your phone.</h2>
+        <p class="lead">At the final whistle the match goes to the Zepp app on your phone over Bluetooth: the score, every event by minute and the added time per half. Tap Copy summary and paste it into the official report. Your last 20 matches are kept. Nothing goes online.</p>
+      </div>
+      <div class="center">
+        <div class="phone" role="img" aria-label="Match report in the Zepp app">
+          <div class="ph-title">Referee+</div>
+          <div class="ph-sec">MATCH REPORT</div>
+          <div class="ph-card">
+            <div class="ph-meta">Sun 4 Oct · Football · U15 2×35</div>
+            <div class="ph-score">Home 2 – 1 Away</div>
+            <div class="ph-ev"><span class="m">12'</span><span class="i"><span class="dot"></span></span>Goal · Home #9</div>
+            <div class="ph-ev"><span class="m">34'</span><span class="i"><span class="crd" style="background:var(--yellow)"></span></span>Yellow · Away #4</div>
+            <div class="ph-ev"><span class="m">46'</span><span class="i"><span class="sub">SUB</span></span>Sub · Home 11 → 14</div>
+            <div class="ph-ev"><span class="m">58'</span><span class="i"><span class="dot"></span></span>Goal · Away #10</div>
+            <div class="ph-ev"><span class="m">66'</span><span class="i"><span class="crd" style="background:var(--red)"></span></span>Red · Away #5</div>
+            <div class="ph-ev"><span class="m">69'</span><span class="i"><span class="dot"></span></span>Goal · Home #7</div>
+            <div class="ph-added">Added time: 1st half +2 · 2nd half +4</div>
+            <div class="ph-copy">Copy summary</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -302,29 +384,15 @@
     <div class="stack" style="gap:22px">
       <div class="eyebrow" style="color:var(--green)">REFEREE+ PRO</div>
       <h2>$4.99 once. No subscription.</h2>
-      <p class="lead">Pro unlocks basketball, handball and ice hockey, plus every new feature as it ships. Try it free for 14 days. One purchase covers up to 3 watches.</p>
+      <p class="lead">The clock is free in every sport. Pro adds the paperwork: log goals, cards, substitutions and penalties with shirt numbers, see the score and penalty timers on the watch, and get the match report on your phone. One purchase covers up to 3 watches.</p>
       <div class="howto">
         <div><div class="n">1</div><div class="s">On your phone, open the Zepp app and go to Referee+.</div></div>
         <div><div class="n">2</div><div class="s">Tap Unlock Pro · $4.99 once and complete the purchase.</div></div>
-        <div><div class="n">3</div><div class="s">On the watch, tap a Pro sport, then I've bought it.</div></div>
+        <div><div class="n">3</div><div class="s">On the watch, start a match, tap the clock, then I've bought it.</div></div>
       </div>
     </div>
     <div class="center">
       <div class="bezel"><div data-watch="paywall" data-size="320" role="img" aria-label="Referee+ Pro unlock screen on the watch"></div></div>
-    </div>
-  </div>
-</section>
-
-<section>
-  <div class="wrap stack" style="gap:40px">
-    <div class="intro">
-      <div class="eyebrow">COMING NEXT</div>
-      <h2>From timer to match report.</h2>
-    </div>
-    <div class="next">
-      <div><div class="t">Goals, cards, subs</div><div class="d">Tap the clock, pick Home or Away, the event, then the shirt number.</div></div>
-      <div style="border-top-color:var(--yellow)"><div class="t">Score and suspensions</div><div class="d">Live score on the match screen, and up to three penalty timers for handball and ice hockey.</div></div>
-      <div style="border-top-color:var(--green)"><div class="t">Match summary</div><div class="d">Score, events by minute and added time per half, ready to copy into the official report.</div></div>
     </div>
   </div>
 </section>
@@ -343,8 +411,10 @@
         <div class="a">No. Everything is signalled by vibration: two short buzzes for one minute left, four for the end of a period or break, one tap to confirm a button press.</div></details>
       <details><summary>Can I read it in bright sun?</summary>
         <div class="a">The match screen is a single large clock in green, yellow, red or white on a pure black background, chosen for maximum contrast on AMOLED displays.</div></details>
-      <details><summary>How does the Pro trial work?</summary>
-        <div class="a">Pro sports are free to try for 14 days. After that, unlock Pro once for $4.99 in the Zepp app; it covers up to 3 watches.</div></details>
+      <details><summary>What is free, and what does Pro add?</summary>
+        <div class="a">The match clock is free in every sport: football, basketball, handball and ice hockey, every format, with stoppage, buzzes and two-tap End. Pro, $4.99 once in the Zepp app for up to 3 watches, adds the event log: goals, cards, substitutions and penalties with shirt numbers, the score and penalty timers on the watch, and the match report on your phone.</div></details>
+      <details><summary>Where does the match report go?</summary>
+        <div class="a">At full time it goes from the watch to the Zepp app on your phone over Bluetooth, and appears in Referee+'s settings with a Copy summary button. If your phone isn't near, it is sent the next time you open Referee+ on the watch. Reports never go online, and players are shirt numbers, not names.</div></details>
       <details><summary>Which watches are supported?</summary>
         <div class="a">Amazfit watches running Zepp OS, from the Band 7, GTR 3 and GTS 3 up to the Balance 2, T-Rex 3 and Active 2. The layout is designed separately for round, square and band screens.</div></details>
     </div>
@@ -386,6 +456,7 @@
       b(x, y, w, h, text, size, color, bg, r) { e.push({ x, y, w, h, text, size, color, bg, r }); },
       f(x, y, w, h, bg, r) { e.push({ x, y, w, h, bg, r }); },
       s(x, y, w, h, line, r, lw) { e.push({ x, y, w, h, line, r, lw }); },
+      l(x, y, w, h, text, size, color) { e.push({ x, y, w, h, text, size, color, left: true }); },
     };
   }
 
@@ -394,6 +465,7 @@
     if (s.top === 'end') L.b(0, m.top, m.endW, m.endH, 'End', m.btn, 'WHITE', 'DARK', 30);
     if (s.top === 'sure') L.b(0, m.top, m.endW + 20, m.endH, 'Sure?', m.btn, 'BLACK', 'RED', 30);
     if (s.top === 'sport') L.t(0, m.top, m.wide, m.endH, s.sport, m.note, 'GREY');
+    if (s.top === 'endScore') { L.b(-70, m.top, 116, m.endH, 'End', m.btn, 'WHITE', 'DARK', 30); L.t(70, m.top, 126, m.endH, s.score, 36, 'WHITE'); }
     L.t(0, m.period, m.periodW, m.periodH, s.period, m.periodSize, s.periodColor || 'WHITE');
     L.t(0, m.clock, m.clockW, m.clockH, s.clock, m.clockSize, s.clockColor);
     const k = s.slot && s.slot.k;
@@ -401,6 +473,10 @@
     if (k === 'stop') { L.s(0, m.slot, m.pillW, m.pillH, 'YELLOW', 30, 3); L.t(0, m.slot, m.pillW - 16, m.pillH, s.slot.t, m.pillText, 'YELLOW'); }
     if (k === 'paused') { L.f(0, m.slot, m.pillW, m.pillH, 'YELLOW', 30); L.f(-80, m.slot, 9, 26, 'BLACK', 0); L.f(-64, m.slot, 9, 26, 'BLACK', 0); L.t(18, m.slot, 200, m.pillH, 'PAUSED', m.pillText, 'BLACK'); }
     if (k === 'over') { L.f(0, m.slot, m.pillW, m.overH, 'RED', 34); L.t(0, m.slot, m.pillW - 16, m.overH, s.slot.t, m.overSize, 'BLACK'); }
+    if (k === 'chips') {
+      const n = s.slot.chips.length, total = n * 110 + (n - 1) * 8;
+      s.slot.chips.forEach((c, i) => { const x = -total / 2 + 55 + i * 118; L.s(x, m.slot, 110, 52, 'WHITE', 26, 2); L.t(x, m.slot, 102, 52, c, 22, 'WHITE'); });
+    }
     L.b(0, m.primary, m.primW, m.primH, s.primary[0], m.btn, s.primary[2] || 'BLACK', s.primary[1], 42);
     return L.els;
   }
@@ -423,10 +499,51 @@
     return L.els;
   }
 
+  // The Pro event pages, from the design spec's event-entry numbers (480 round).
+  function team() {
+    const L = mk();
+    L.t(0, -160, m.wide, 38, "Event · 64'", 28, 'GREY');
+    L.b(0, -46, 340, 120, 'Home', 40, 'WHITE', 'DARK', 60);
+    L.b(0, 94, 300, 120, 'Away', 40, 'WHITE', 'DARK', 60);
+    return L.els;
+  }
+  function etype() {
+    const L = mk();
+    L.t(0, -160, m.wide, 38, "Home · 64'", 28, 'GREY');
+    [['Goal', 'BLACK', 'WHITE'], ['Sub', 'WHITE', 'DARK'], ['Yellow', 'BLACK', 'YELLOW'], ['Red', 'BLACK', 'RED']].forEach((t, i) =>
+      L.b(i % 2 ? 88 : -88, i < 2 ? -48 : 76, 164, 112, t[0], 32, t[1], t[2], 28));
+    return L.els;
+  }
+  function pad() {
+    const L = mk();
+    L.t(0, -170, m.wide, 32, 'Home · Yellow', 24, 'GREY');
+    L.t(0, -118, 160, 56, '7', 52, 'WHITE');
+    L.f(0, -86, 100, 4, 'GREY', 0);
+    const cols = [-120, -40, 40, 120], rows = [-34, 46, 126];
+    ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'Del', 'OK'].forEach((k, i) => {
+      const ok = k === 'OK', del = k === 'Del';
+      L.b(cols[i % 4], rows[Math.floor(i / 4)], 72, 72, k, del ? 24 : 32, ok ? 'BLACK' : del ? 'GREY' : 'WHITE', ok ? 'GREEN' : 'DARK', 36);
+    });
+    return L.els;
+  }
+  function events() {
+    const L = mk();
+    L.t(0, -170, m.wide, 44, 'Events', 36, 'WHITE');
+    L.b(0, -112, 300, 60, 'Undo last', 28, 'RED', 'DARK', 30);
+    [["61'", 'goal', 'Home #7'], ["58'", 'goal', 'Away #10'], ["34'", 'yellow', 'Away #4'], ["12'", 'goal', 'Home #9']].forEach((r, i) => {
+      const y = -40 + i * 72;
+      L.f(0, y, 360, 64, 'DARK', 32);
+      L.t(-128, y, 60, 64, r[0], 24, 'GREY');
+      if (r[1] === 'goal') L.f(-80, y, 24, 24, 'WHITE', 12); else L.f(-80, y, 22, 30, r[1] === 'red' ? 'RED' : 'YELLOW', 3);
+      L.l(40, y, 200, 64, r[2], 28, 'WHITE');
+    });
+    return L.els;
+  }
+
   function paywall() {
     const L = mk();
     L.t(0, -150, 320, 44, 'Referee+ Pro', 36, 'WHITE');
-    L.t(0, -84, 340, 76, 'Cards, match report\nand every sport.', 28, 'WHITE');
+    L.t(0, -84, 340, 76, 'Goals, cards, subs\nand the match report.', 28, 'WHITE');
     L.t(0, -6, 340, 56, '$4.99 once', 48, 'GREEN');
     L.t(0, 72, 320, 64, 'Zepp app > Referee+\n> Unlock Pro', 24, 'GREY');
     L.b(0, 158, 260, 76, "I've bought it", 30, 'WHITE', 'DARK', 38);
@@ -444,10 +561,12 @@
     confirm: { top: 'sure', period: 'End 1st half?', periodColor: 'RED', clock: '45:00', clockColor: 'WHITE', slot: { k: 'over', t: '+03:10' }, primary: YE('Stop') },
     brk: { top: 'none', period: 'Half-time', clock: '12:40', clockColor: 'WHITE', slot: { k: 'note', t: 'Next: 2nd half' }, primary: GO('Start') },
     full: { top: 'none', period: 'Full time', clock: '90:00', clockColor: 'WHITE', slot: { k: 'note', t: 'Added 2 + 4 min' }, primary: ['Done', 'WHITE'] },
+    proMatch: { top: 'endScore', score: '2–1', period: '2nd half', clock: '63:12', clockColor: 'GREEN', slot: { k: 'note', t: 'Added 1 min' }, primary: YE('Stop') },
+    chips: { top: 'endScore', score: '14–12', period: '2nd half', clock: '18:24', clockColor: 'GREEN', slot: { k: 'chips', chips: ['A12 0:51', 'H7 1:24'] }, primary: YE('Pause') },
   };
-  const HOME = [{ k: 'row', t: 'Football' }, { k: 'hdr', t: 'PRO · 14-DAY TRIAL' }, { k: 'row', t: 'Basketball' }, { k: 'row', t: 'Handball' }, { k: 'row', t: 'Ice hockey' }];
+  const HOME = [{ k: 'row', t: 'Football' }, { k: 'row', t: 'Basketball' }, { k: 'row', t: 'Handball' }, { k: 'row', t: 'Ice hockey' }];
   const FMT = [{ k: 'row', t: 'Adult 2×45', fg: 'GREEN', bg: 'GREEN_D' }, { k: 'row', t: 'U17 2×40' }, { k: 'row', t: 'U15 2×35' }, { k: 'row', t: 'U13 2×30' }, { k: 'row', t: 'U11 2×25' }];
-  const RES = [{ k: 'res', t: '2nd half · 63:12' }, { k: 'row', t: 'Football' }, { k: 'hdr', t: 'PRO · 14-DAY TRIAL' }, { k: 'row', t: 'Basketball' }];
+  const RES = [{ k: 'res', t: '2nd half · 63:12' }, { k: 'row', t: 'Football' }, { k: 'row', t: 'Basketball' }];
 
   const SCREENS = {
     hero: () => match(S.running),
@@ -455,6 +574,10 @@
     formats: () => list('Football', FMT),
     resume: () => list('Referee+', RES),
     paywall,
+    team,
+    etype,
+    pad,
+    events,
   };
   Object.keys(S).forEach((k) => { SCREENS[k] = () => match(S[k]); });
 
@@ -478,6 +601,7 @@
       });
       if (e.bg) { el.style.background = T[e.bg]; el.style.borderRadius = e.r + 'px'; }
       if (e.line) { el.style.border = e.lw + 'px solid ' + T[e.line]; el.style.borderRadius = e.r + 'px'; }
+      if (e.left) el.classList.add('left');
       if (e.text) { const t = document.createElement('div'); t.textContent = e.text; el.appendChild(t); }
       screen.appendChild(el);
     });
